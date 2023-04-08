@@ -1,6 +1,6 @@
 # Tessellated water effect
 
-<span><img src="demo.png" width="350px"><img src="demo2.png" width="350px"></span>
+<span><img src="assets/demo.png" width="350px"><img src="assets/demo2.png" width="350px"></span>
 
 In this project, I played around with shaders and used tessellation and a geometry shader (With a superposition of Gerster waves)
 to simulate some water. Some of the key features of it are:
