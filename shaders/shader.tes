@@ -1,0 +1,36 @@
+#version 400 core
+
+layout (quads, equal_spacing, ccw) in;
+
+in vec2 tcs_uv[];
+in vec3 tcs_pos[];
+in vec3 tcs_normal[];
+out vec2 tes_uv;
+out vec3 tes_pos;
+out vec3 tes_normal;
+
+void main() {
+	// We use uv coordinates for quad (not to be confused with texture coords)
+	float u = gl_TessCoord.x;
+	float v = gl_TessCoord.y;
+
+	// First, find u interpolation between top and bottom edges of patch positions
+	vec3 quad_bottom_pos = mix(tcs_pos[0], tcs_pos[1], u);
+	vec3 quad_top_pos = mix(tcs_pos[3], tcs_pos[2], u);
+	// Now interpolate for v
+	vec3 lerp_position = mix(quad_bottom_pos, quad_top_pos, v);
+
+	// Same for uv coords, we need to interpolate.
+	vec2 quad_bottom_uv = mix(tcs_uv[0], tcs_uv[1], u);
+	vec2 quad_top_uv = mix(tcs_uv[3], tcs_uv[2], u);
+	vec2 lerp_uv = mix(quad_bottom_uv, quad_top_uv, v);
+
+	vec3 quad_bottom_normal = mix(tcs_normal[0], tcs_normal[1], u);
+	vec3 quad_top_normal = mix(tcs_normal[3], tcs_normal[2], u);
+	vec3 lerp_normal = mix(quad_bottom_normal, quad_top_normal, v);
+
+	// Set new vertex's position in clip space	
+	tes_pos = lerp_position;
+	tes_uv = lerp_uv;
+	tes_normal = lerp_normal;
+}

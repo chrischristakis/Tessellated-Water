@@ -1,0 +1,34 @@
+#version 400 core
+
+layout (vertices = 4) out; // Patch size = 4
+
+uniform float TessLevelInner;
+uniform float TessLevelOuter;
+
+// Arrays because tcs works on all vertices in a patch (so arrs have size == 4)
+in vec2 v_uv[];
+in vec3 v_pos[];
+in vec3 v_normal[];
+out vec2 tcs_uv[];
+out vec3 tcs_pos[];
+out vec3 tcs_normal[];
+
+void main() {
+	// Propogate position to TES, using invocationID as our vertex identifier in a patch
+	tcs_pos[gl_InvocationID] = v_pos[gl_InvocationID];
+
+	// Same with UV and normal
+	tcs_uv[gl_InvocationID] = v_uv[gl_InvocationID];
+	tcs_normal[gl_InvocationID] = v_normal[gl_InvocationID];
+
+	// Only matters once per patch, so do it on ID == 0
+	if(gl_InvocationID == 0) {
+		gl_TessLevelOuter[0] = TessLevelOuter;	
+		gl_TessLevelOuter[1] = TessLevelOuter;	
+		gl_TessLevelOuter[2] = TessLevelOuter;	
+		gl_TessLevelOuter[3] = TessLevelOuter;	
+
+		gl_TessLevelInner[0] = TessLevelInner;	
+		gl_TessLevelInner[1] = TessLevelInner;
+	}
+}
